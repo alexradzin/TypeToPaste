@@ -1,4 +1,18 @@
+# General Java
+classes/
+target/
 *.class
+
+# Eclipse
+.classpath
+.project
+.settings
+
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
