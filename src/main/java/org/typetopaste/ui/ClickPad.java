@@ -3,6 +3,7 @@ package org.typetopaste.ui;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
@@ -36,7 +37,7 @@ public class ClickPad extends JFrame {
 		setAlwaysOnTop(true);
 		JLabel icon = new JLabel(new ImageIcon(getClass().getResource("/keyboard.png")));
 		add(icon, BorderLayout.CENTER);
-		//add(toolbar(), BorderLayout.NORTH);
+		add(toolbar(), BorderLayout.NORTH);
 		setSize(width, height);
 		positionPad();
 		
@@ -100,7 +101,10 @@ public class ClickPad extends JFrame {
 		ClickPadEventManager eventManager = new ClickPadEventManager(pad, robot);
 		pad.addMouseListener(eventManager);
 		pad.addMouseMotionListener(eventManager);
-		pad.addKeyListener(eventManager);
+		
+		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(eventManager);		
+		
 		pad.setVisible(true);
 	}
 	

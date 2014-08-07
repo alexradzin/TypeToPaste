@@ -1,6 +1,7 @@
 package org.typetopaste.ui;
 
 import java.awt.FontMetrics;
+import java.awt.KeyEventDispatcher;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Robot;
@@ -20,7 +21,7 @@ import java.util.Collection;
 import org.typetopaste.typist.Typist;
 import org.typetopaste.typist.TypistFactory;
 
-public class ClickPadEventManager implements MouseListener, MouseMotionListener, KeyListener {
+public class ClickPadEventManager implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher {
 	private final ClickPad pad;
 	private final Robot robot;
 	private final Typist<String> typist;
@@ -38,6 +39,24 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 		new PositionFixer().start();
 	}
 
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent e) {
+		switch(e.getID()) {
+			case KeyEvent.KEY_PRESSED:
+				keyPressed(e);
+				break;
+			case KeyEvent.KEY_RELEASED:
+				keyReleased(e);
+				break;
+			case KeyEvent.KEY_TYPED:
+				keyTyped(e);
+				break;
+		}
+		
+		return false;
+	}	
+	
+	
 	@Override
 	public void keyTyped(KeyEvent e) {
 	}
@@ -240,4 +259,5 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 			}
 		}
 	}
+
 }
