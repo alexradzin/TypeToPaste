@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.typetopaste.typist.Typist;
 import org.typetopaste.typist.TypistFactory;
@@ -25,6 +27,8 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 	
 	private volatile boolean mouseOut = false;
 	private Object positionerLock = new Object();
+	
+	private Collection<Integer> copyKeyCommandSequence = new ArrayList<>(); 
 	
 	public ClickPadEventManager(ClickPad pad, Robot robot) {
 		super();
@@ -40,13 +44,16 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void keyPressed(KeyEvent e) {
+		if (processSpecialKeysPressed(e)) {
+			return;
+		}
 		move(e);
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		//TODO: keyReleased with Ctrl-v should start typing only when Ctrl is realased. Otherwise if we react on reasing of V and ctrl is still pressed we start typing for example ctrl-s instead of s
-		close(process(e));
+		close(processSpecialKeysReleased(e));
 	}
 
 	@Override
@@ -126,18 +133,18 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 		robot.mouseMove(x, y);
 	}
 
-	private boolean process(KeyEvent e) {
+	private boolean processSpecialKeysPressed(KeyEvent e) {
 		int code = e.getKeyCode();
-		System.out.println(code + ", " + KeyEvent.VK_ESCAPE);
-
+		
 		if(KeyEvent.VK_V == code  && (e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK) {
 		    // ctrl-v
-			paste();
+			copyRequest(KeyEvent.VK_CONTROL, KeyEvent.VK_V);
 			return true;
 		}
-		if(KeyEvent.VK_INSERT == code  && e.getModifiers() == InputEvent.SHIFT_DOWN_MASK) {
+		
+		if(KeyEvent.VK_INSERT == code  && (e.getModifiers() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK) {
 		    // shift-insert
-			paste();
+			copyRequest(KeyEvent.VK_SHIFT, KeyEvent.VK_INSERT);
 			return true;
 		}
 
@@ -149,6 +156,34 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 		return false;
 	}
 	
+
+	private boolean processSpecialKeysReleased(KeyEvent e) {
+		int code = e.getKeyCode();
+		
+		synchronized(copyKeyCommandSequence) {
+			if (copyKeyCommandSequence.remove(code)) {
+				System.out.println("remove returned true " + copyKeyCommandSequence);
+				if (copyKeyCommandSequence.isEmpty()) {
+					paste();
+					return true;
+				}
+			} else {
+				copyKeyCommandSequence.clear();
+			}
+	
+			return false;
+		}
+	}
+	
+	
+	private void copyRequest(int ... keys) {
+		synchronized(copyKeyCommandSequence) {
+			copyKeyCommandSequence.clear();
+			for (int key : keys) {
+				copyKeyCommandSequence.add(key);
+			}
+		}
+	}
 
 	private void paste() {
 		String clipboardText = getFromClipboard();
@@ -203,8 +238,6 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 					}
 				}
 			}
-			
 		}
-		
 	}
 }
