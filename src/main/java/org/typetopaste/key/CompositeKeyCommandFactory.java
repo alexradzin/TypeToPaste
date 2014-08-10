@@ -5,9 +5,10 @@ public class CompositeKeyCommandFactory implements KeyCommandFactory {
 	
 	
 
-	public CompositeKeyCommandFactory(EnglishKeyboard keyboard, CodeFactory codeFactory) {
+	public CompositeKeyCommandFactory(KeyCommandFactory ... factories) {
 		super();
-		this.commandFactories = new KeyCommandFactory[] {keyboard, codeFactory}; 
+		this.commandFactories = new KeyCommandFactory[factories.length];
+		System.arraycopy(factories, 0, this.commandFactories, 0, factories.length); 
 	}
 
 

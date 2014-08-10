@@ -22,6 +22,17 @@ import javax.swing.SwingUtilities;
 public class ClickPad extends JFrame {
 	private int width;
 	private int height;
+	private JRadioButton alt;
+	private JRadioButton ctlrShiftU;
+	
+	
+	private static final int[][][] allCodeKeys = new int[][][] {
+			new int[][] {{KeyEvent.VK_ALT}},
+			new int[][] {{KeyEvent.VK_CONTROL, KeyEvent.VK_SHIFT}, {KeyEvent.VK_U}}
+	};
+	
+	
+
 	
 	
 	public ClickPad(int closeOperation) {
@@ -51,15 +62,22 @@ public class ClickPad extends JFrame {
 	
 	private JPanel toolbar() {
 		JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-		JRadioButton alt = new JRadioButton("Alt");
+		alt = new JRadioButton("Alt");
 		alt.setMnemonic(KeyEvent.VK_A);
-		JRadioButton ctlrShiftU = new JRadioButton("Ctrl-Shift-U");
+		ctlrShiftU = new JRadioButton("Ctrl-Shift-U");
 		ctlrShiftU.setMnemonic(KeyEvent.VK_C);
 		ButtonGroup group = new ButtonGroup();
 		group.add(alt);
 		group.add(ctlrShiftU);
 		
-		alt.setSelected(true); //TODO do this via mode. The default must depend on current platform 
+		String osName = System.getProperty("os.name");
+		if (osName.toLowerCase().contains("windows")) {
+			alt.setSelected(true); 
+		} else if (osName.toLowerCase().contains("linux")) {
+			ctlrShiftU.setSelected(true);
+		}
+		
+		//TODO disable unicode input for unsupported platform 
 		
 		panel.add(alt);
 		panel.add(ctlrShiftU);
@@ -86,9 +104,19 @@ public class ClickPad extends JFrame {
         return new Point(mousePosition.x - width / 2, mousePosition.y - height / 2);
 	}
 
-	// TODO: add radio button that allows changing code keys and initialize the default selection according to the current platform
-	int[] getCodeKeys() {
-		return new int[] {KeyEvent.VK_ALT};
+	
+	int[][][] getAllCodeKeys() {
+		return allCodeKeys;
+	}
+	
+	int[][] getCodeKeys() {
+		if(alt.isSelected()) {
+			return allCodeKeys[0];
+		} 
+		if (ctlrShiftU.isSelected()) {
+			return allCodeKeys[1];
+		}
+		return null;
 	}
 
 	public void close() {

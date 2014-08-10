@@ -27,10 +27,16 @@ public class CodeFactory implements KeyCommandFactory {
 	
 	
 	
-	public CodeFactory(int[] codeKeys) {
+	public CodeFactory(int[] holdKeys, int[] typeKeys) {
 		super();
-		before = sequence(KeyStrike.PRESS, codeKeys);
-		after = sequence(KeyStrike.RELEASE, codeKeys);
+		KeyCommand[] holdKeyCommands = sequence(KeyStrike.PRESS, holdKeys);
+		KeyCommand[] typeKeyCommands = sequence(KeyStrike.TYPE, typeKeys);
+		
+		before = new KeyCommand[holdKeyCommands.length + typeKeyCommands.length];
+		System.arraycopy(holdKeyCommands, 0, before, 0, holdKeyCommands.length);
+		System.arraycopy(typeKeyCommands, 0, before, holdKeyCommands.length, typeKeyCommands.length);
+		
+		after = sequence(KeyStrike.RELEASE, holdKeys);
 	}
 	
 	private static KeyCommand[] sequence(KeyStrike strike, int[] codeKeys) {

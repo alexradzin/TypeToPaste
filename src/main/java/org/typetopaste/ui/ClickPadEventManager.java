@@ -17,6 +17,7 @@ import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.Callable;
 
 import org.typetopaste.typist.Typist;
 import org.typetopaste.typist.TypistFactory;
@@ -35,7 +36,17 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 		super();
 		this.pad = pad;
 		this.robot = robot;
-		this.typist = new TypistFactory().createTypist(robot, pad.getCodeKeys());
+		
+		Callable<int[][]> switchGetter = new Callable<int[][]>() {
+			@Override
+			public int[][] call() throws Exception {
+				return ClickPadEventManager.this.pad.getCodeKeys();
+			}
+		}; 
+			
+			
+			
+		this.typist = new TypistFactory().createTypist(robot, pad.getAllCodeKeys(), switchGetter);
 		new PositionFixer().start();
 	}
 
@@ -181,7 +192,6 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 		
 		synchronized(copyKeyCommandSequence) {
 			if (copyKeyCommandSequence.remove(code)) {
-				System.out.println("remove returned true " + copyKeyCommandSequence);
 				if (copyKeyCommandSequence.isEmpty()) {
 					paste();
 					return true;
