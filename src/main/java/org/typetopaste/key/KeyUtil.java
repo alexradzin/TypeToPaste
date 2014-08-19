@@ -64,7 +64,10 @@ public abstract class KeyUtil {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(toString(codes[0]));
 		for (int i = 1; i < codes.length; i++) {
-			buffer.append(separator).append(toString(codes[i]));
+			String s = toString(codes[i]);
+			if (s != null) {
+				buffer.append(separator).append(s);
+			}
 		}
 		return buffer.toString();
 	}
@@ -93,8 +96,10 @@ public abstract class KeyUtil {
 				String fieldName = field.getName();
 				String keyName = fieldName.substring(KEY_PREFIX_LENGTH);
 				int keyCode = field.getInt(null);
-				codeToName.put(keyCode, keyName);
-				nameToCode.put(keyName, keyCode);
+				if (keyCode != KeyEvent.VK_UNDEFINED) { // undefined is 0. We prefer map 0 to null (see toString(int))
+					codeToName.put(keyCode, keyName);
+					nameToCode.put(keyName, keyCode);
+				}
 			}
 		}
 	}

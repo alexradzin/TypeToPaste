@@ -2,6 +2,7 @@ package org.typetopaste;
 
 import static java.awt.event.KeyEvent.VK_A;
 import static java.awt.event.KeyEvent.VK_ALT;
+import static java.awt.event.KeyEvent.VK_C;
 import static java.awt.event.KeyEvent.VK_CONTROL;
 import static java.awt.event.KeyEvent.VK_T;
 import static java.awt.event.KeyEvent.VK_X;
@@ -39,6 +40,12 @@ public class KeyUtilTest {
 	public void toStringCtrlZ() {
 		toString(new int[] {VK_CONTROL, VK_Z}, "Ctrl+Z");
 	}
+
+	@Test
+	public void toStringCtrlAltCNull() {
+		toString(new int[] {VK_CONTROL, VK_ALT, VK_C, 0}, "Ctrl+Alt+C");
+	}
+	
 	
 	private void fromString(String str, int[] expectedCodes) {
 		int[] actualCodes = KeyUtil.fromString(str);

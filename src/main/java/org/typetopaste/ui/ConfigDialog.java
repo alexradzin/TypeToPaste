@@ -18,7 +18,7 @@ import javax.swing.SwingConstants;
 
 @SuppressWarnings("serial")
 public class ConfigDialog extends JFrame implements KeyEventDispatcher {
-	private static final int[] DEFAULT_SHORTCUT = new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_SHIFT, KeyEvent.VK_ALT, KeyEvent.VK_C}; 
+	private static final int[] DEFAULT_SHORTCUT = new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_C}; 
 	private final Installer installer;
 	private final ShortcutEditor shortcutEditor;
 	
