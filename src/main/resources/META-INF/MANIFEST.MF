@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Built-By: alex
+Build-Jdk: 1.7.0_45
+Main-Class: org.typetopaste.ui.ClickPad

@@ -178,11 +178,6 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 			return true;
 		}
 
-		if(KeyEvent.VK_ESCAPE == code) {
-			// just terminate
-			return true;
-		}
-		
 		return false;
 	}
 	
@@ -200,7 +195,7 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 				copyKeyCommandSequence.clear();
 			}
 	
-			return false;
+			return KeyEvent.VK_ESCAPE == code;
 		}
 	}
 	

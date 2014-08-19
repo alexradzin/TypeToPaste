@@ -11,7 +11,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,7 +45,7 @@ public class ClickPad extends JFrame {
 		
 		setLayout(new BorderLayout(0, 0));
 		setAlwaysOnTop(true);
-		JLabel icon = new JLabel(new ImageIcon(getClass().getResource("/keyboard.png")));
+		JLabel icon = new JLabel(UIUtil.getTypeToPasteIcon());
 		add(icon, BorderLayout.CENTER);
 		add(toolbar(), BorderLayout.NORTH);
 		setSize(width, height);
