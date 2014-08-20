@@ -1,23 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="" href="">
-    <information>
-        <title>Type To Paste</title>
-        <vendor>AlexR</vendor>
-        <icon href="keyboard.png"/>
-        <offline-allowed/>
-    </information>
-    <resources>
-        <!-- Application Resources -->
-        <j2se version="1.7+" href=
-           "http://java.sun.com/products/autodl/j2se"/>
-        <jar href="typetopaste-1.0-SNAPSHOT.jar" main="true" />
-
-    </resources>
-    <application-desc
-         name="Paste text content even if target application does not support paste opration from clipboard"
-         main-class="org.typetopaste.ui.ClickPad"
-         width="300"
-         height="300">
-     </application-desc>
-     <update check="background"/>
-</jnlp>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- JNLP File for BoxLayoutDemo -->
+<jnlp
+  spec="1.0+"
+  codebase="http://localhost:8080/ttp"
+  href="typetopaste.jnlp">
+  <information>
+    <title>Type To Paste</title>
+    <vendor>AlexR</vendor>
+	<homepage href="http://localhost:8080/ttp" />
+    <description>Type To Paste</description>
+    <description kind="short">PENDING</description>
+    <offline-allowed/>
+  </information>
+	<security>
+        <all-permissions/>
+    </security>  
+  <resources>
+    <j2se version="1.7+"/>
+    <jar href="typetopaste-1.0-SNAPSHOT.jar"/>
+  </resources>
+  <application-desc main-class="org.typetopaste.ui.Installer"/>
+</jnlp> 
