@@ -3,6 +3,7 @@ package org.typetopaste.ui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
@@ -11,6 +12,7 @@ import javax.swing.JOptionPane;
 
 import org.typetopaste.install.ShortcutCreator;
 import org.typetopaste.install.WindowsShortcutCreator;
+import org.typetopaste.util.IOUtil;
 
 public class Installer {
 	private ShortcutCreator shortcutCreator;
@@ -54,11 +56,13 @@ public class Installer {
 		configuDialog.setLocation(dim.width/2-configuDialog.getSize().width/2, dim.height/2-configuDialog.getSize().height/2);		
 		configuDialog.setVisible(true);
 	}
+	
 
 	public void createShortcut(int[] shortcut) {
 		try {
 			String jar = getJarPath();
-			String[] args = {"-jar", jar}; 
+			String[] args = {"-jar", jar};
+			
 			shortcutCreator.createShortcut(getJvmPath(), args, shortcut);
 			System.exit(0);
 		} catch (IOException e) {
@@ -76,7 +80,23 @@ public class Installer {
 	
 	private String getJarPath() throws IOException {
 		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		return new File(location.getFile()).getCanonicalPath();
+		File locationFile = new File(location.getFile());
+		String protocol = location.getProtocol();
+		
+		if (protocol.toLowerCase().startsWith("http")) {
+			// If we are running using JNLP the jar file is too small to trigger java web start to cache it. 
+			// So we download the file again and store it in current directory in order to configure shortcut. 
+			//TODO: although it is fine for Windows using current directory on other platforms may cause problems. Test it!
+			File cachedJar = new File(new File("."), locationFile.getName());
+			FileOutputStream faos = new FileOutputStream(cachedJar);
+			
+			IOUtil.copy(location.openStream(), faos);
+			faos.flush();
+			faos.close();
+			locationFile = cachedJar; 
+		}
+		
+		return locationFile.getAbsolutePath();
 	}
 	
 	private ShortcutCreator shortcutCreator() {

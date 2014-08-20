@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="" href="">
+    <information>
+        <title>Type To Paste</title>
+        <vendor>AlexR</vendor>
+        <icon href="keyboard.png"/>
+        <offline-allowed/>
+    </information>
+    <resources>
+        <!-- Application Resources -->
+        <j2se version="1.7+" href=
+           "http://java.sun.com/products/autodl/j2se"/>
+        <jar href="typetopaste-1.0-SNAPSHOT.jar" main="true" />
+
+    </resources>
+    <application-desc
+         name="Paste text content even if target application does not support paste opration from clipboard"
+         main-class="org.typetopaste.ui.ClickPad"
+         width="300"
+         height="300">
+     </application-desc>
+     <update check="background"/>
+</jnlp>
