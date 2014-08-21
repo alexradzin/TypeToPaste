@@ -87,7 +87,12 @@ public class Installer {
 			// If we are running using JNLP the jar file is too small to trigger java web start to cache it. 
 			// So we download the file again and store it in current directory in order to configure shortcut. 
 			//TODO: although it is fine for Windows using current directory on other platforms may cause problems. Test it!
-			File cachedJar = new File(new File("."), locationFile.getName());
+			// If current directory is not writable we try to use temporary directory as a work around. 
+			File cacheDir = new File(".").getCanonicalFile();
+			if (!cacheDir.canWrite()) {
+				cacheDir = new File(System.getProperty("java.io.tmpdir")); 
+			}
+			File cachedJar = new File(cacheDir, locationFile.getName());
 			FileOutputStream faos = new FileOutputStream(cachedJar);
 			
 			IOUtil.copy(location.openStream(), faos);

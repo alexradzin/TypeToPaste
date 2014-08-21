@@ -82,7 +82,7 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		//TODO: keyReleased with Ctrl-v should start typing only when Ctrl is realased. Otherwise if we react on reasing of V and ctrl is still pressed we start typing for example ctrl-s instead of s
+		//TODO: keyReleased with Ctrl-v should start typing only when Ctrl is released. Otherwise if we react on releasing of V and ctrl is still pressed we start typing for example ctrl-s instead of s
 		close(processSpecialKeysReleased(e));
 	}
 

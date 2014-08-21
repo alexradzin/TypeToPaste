@@ -34,7 +34,9 @@ public class ConfigDialog extends JFrame implements KeyEventDispatcher {
 		
 		
 		JButton create = new JButton("Create");
+		create.setMnemonic('c');
 		JButton cancel = new JButton("Cancel");
+		cancel.setMnemonic('a');
 		
 		Container pane = getContentPane();
 		GroupLayout layout = new GroupLayout(getContentPane());
