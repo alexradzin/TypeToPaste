@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
