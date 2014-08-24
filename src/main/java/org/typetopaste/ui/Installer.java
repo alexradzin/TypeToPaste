@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -43,6 +44,7 @@ public class Installer {
 				    null,  
 	                cmd);
 		} catch (IOException e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,
 				    message,
 				    title,
@@ -62,10 +64,10 @@ public class Installer {
 		try {
 			String jar = getJarPath();
 			String[] args = {"-jar", jar};
-			
 			shortcutCreator.createShortcut(getJvmPath(), args, shortcut);
 			System.exit(0);
 		} catch (IOException e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null,
 				    "Automatic shortcut creation failed",
 				    "Error",
@@ -80,7 +82,7 @@ public class Installer {
 	
 	private String getJarPath() throws IOException {
 		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		File locationFile = new File(location.getFile());
+		File locationFile = new File(location.getPath());
 		String protocol = location.getProtocol();
 		
 		if (protocol.toLowerCase().startsWith("http")) {
