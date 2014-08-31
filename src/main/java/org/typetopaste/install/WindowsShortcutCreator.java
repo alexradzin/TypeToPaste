@@ -13,6 +13,13 @@ import org.typetopaste.key.KeyUtil;
 import org.typetopaste.util.IOUtil;
 import org.typetopaste.util.TemplateEngine;
 
+/**
+ * Implementation of {@link ShortcutCreator} for MS Windows.<br/>
+ * 
+ * Generates and runs VB script that creates desktop shortcut with predefined keyboard shortcut.
+ * 
+ * @author alex
+ */
 public class WindowsShortcutCreator implements ShortcutCreator {
 	private static final String ICON_RESOURCE = "keyboard.ico";
 	

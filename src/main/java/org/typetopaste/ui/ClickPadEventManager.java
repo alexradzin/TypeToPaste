@@ -22,6 +22,14 @@ import java.util.concurrent.Callable;
 import org.typetopaste.typist.Typist;
 import org.typetopaste.typist.TypistFactory;
 
+/**
+ * This is a "model" of {@code ClickPad} in terms of MVC pattern where {@code ClickPad} is a view.
+ * 
+ * This class implements logic of handling events captured by {@code ClickPad}.
+ * 
+ * @see ClickPad
+ * @author alex
+ */
 public class ClickPadEventManager implements MouseListener, MouseMotionListener, KeyListener, KeyEventDispatcher {
 	private final ClickPad pad;
 	private final Robot robot;
@@ -247,6 +255,11 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 		}
 	}
 	
+	/**
+	 * When mouse is moving fast it can "escape" the {@code ClickPad}. 
+	 * To avoid this we "fix" the position of {@code ClickPad} when mouse is out asynchronously.     
+	 * @author alex
+	 */
 	private class PositionFixer extends Thread {
 		@Override
 		public void run() {
@@ -257,6 +270,10 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 					} catch (InterruptedException e) {
 						// nothing to do here
 					}
+					// It is not enough to fix position only once. 
+					// If mouse continues moving out while fixing the position 
+					// it can escape the area while ClickPad is being positioned.
+					// Looping fixes this problem.
 					while (mouseOut) {
 						pad.positionPad();
 					}

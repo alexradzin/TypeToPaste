@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * Utilities that help to process key codes.  
+ * @author alex
+ */
 public abstract class KeyUtil {
 	private static final char separator = '+';
 	private static final Pattern split = Pattern.compile("[+]");
@@ -33,11 +37,23 @@ public abstract class KeyUtil {
 		initAliases();
 	}
 	
-	
+	/**
+	 * Translates string into sequence of key codes. For example translates {@code Ctrl+C} to corresponding key codes.   
+	 * @param str 
+	 * @return array of codes of characters that compose the given string
+	 * @see #fromStrings(String[])
+	 * @see #toString(int[])
+	 */
 	public static int[] fromString(String str) {
 		return fromStrings(split.split(str));
 	}
-	
+
+	/**
+	 * Creates given key names into corresponding key codes. For example translates array {@code ["Ctrl", "C"]} into key codes. 
+	 * @param names
+	 * @return key codes
+	 * @see #fromString(String)
+	 */
 	public static int[] fromStrings(String[] names) {
 		int[] codes = new int[names.length];
 		for (int i = 0; i < names.length; i++) {
@@ -57,6 +73,11 @@ public abstract class KeyUtil {
 		return codes; 
 	}
 
+	/**
+	 * Translates array of key codes into corresponding string representation. 
+	 * @param codes
+	 * @return string representation of given key codes
+	 */
 	public static String toString(int[] codes) {
 		if (codes.length == 0) {
 			return "";
@@ -72,6 +93,11 @@ public abstract class KeyUtil {
 		return buffer.toString();
 	}
 	
+	/**
+	 * Creates string representation of separate character (e.g. {@code Ctrl}, {@code Alt} etc).  
+	 * @param code - code of the character
+	 * @return string representation. 
+	 */
 	public static String toString(int code) {
 		String internalName = codeToName.get(code);
 		if (internalName == null) {

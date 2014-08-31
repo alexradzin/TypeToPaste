@@ -1,5 +1,11 @@
 package org.typetopaste.typist;
 
+/**
+ * Types sequence of given type using {@code singleTypist} parametrized to the same type. 
+ * @author alex
+ *
+ * @param <T>
+ */
 public class SequenceTypist<T> implements Typist<Iterable<T>> {
 	private final Typist<T> singleTypist;
 	

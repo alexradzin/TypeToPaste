@@ -13,6 +13,10 @@ import org.typetopaste.key.KeyCommand;
 import org.typetopaste.key.KeyCommandFactory;
 import org.typetopaste.key.SwitchKeyCommandFactory;
 
+/**
+ * Factory that creates and initiates instance of string {@link Typist}. 
+ * @author alex
+ */
 public class TypistFactory {
 	private static final int[] EMPTY_INT_ARRAY = new int[0];
 	

@@ -16,6 +16,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+/**
+ * Dialog that allows user to configure the shortcut assigned to {@code TypeToPaste}. 
+ * @author alex
+ */
 @SuppressWarnings("serial")
 public class ConfigDialog extends JFrame implements KeyEventDispatcher {
 	private static final int[] DEFAULT_SHORTCUT = new int[] {KeyEvent.VK_CONTROL, KeyEvent.VK_ALT, KeyEvent.VK_C}; 

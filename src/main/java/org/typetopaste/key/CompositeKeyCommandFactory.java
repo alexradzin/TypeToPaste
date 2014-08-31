@@ -1,5 +1,10 @@
 package org.typetopaste.key;
 
+/**
+ * Implementation of {@link KeyCommandFactory} that holds several other {@code KeyCommandFactories} 
+ * and tries them one-by-one until the first returns not-null result.  
+ * @author alex
+ */
 public class CompositeKeyCommandFactory implements KeyCommandFactory {
 	private final KeyCommandFactory[] commandFactories;
 	

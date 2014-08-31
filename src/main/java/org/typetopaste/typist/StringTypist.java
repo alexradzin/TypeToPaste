@@ -3,6 +3,12 @@ package org.typetopaste.typist;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Implementation of {@link Typist} that types strings.<p/>
+ * 
+ * Transforms string into sequence of characters and types it using {@link SequenceTypist}.  
+ * @author alex
+ */
 public class StringTypist implements Typist<String> {
 	private final SequenceTypist<Character> charTypist;
 

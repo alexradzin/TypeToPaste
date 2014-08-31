@@ -11,6 +11,10 @@ import static org.typetopaste.key.CharKeyMappingUtil.init;
 import static org.typetopaste.key.CharKeyMappingUtil.initRange;
 import static org.typetopaste.key.CharKeyMappingUtil.typeCommand;
 
+/**
+ * Implementation of {@link KeyCommandFactory} that supports standard English keyboard. 
+ * @author alex
+ */
 public class EnglishKeyboard implements KeyCommandFactory {
 	private static final KeyCommand SHIFT_PRESS = new KeyCommand(KeyStrike.PRESS, KeyEvent.VK_SHIFT);
 	private static final KeyCommand SHIFT_RELEASE = new KeyCommand(KeyStrike.RELEASE, KeyEvent.VK_SHIFT);

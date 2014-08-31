@@ -9,6 +9,10 @@ import javax.swing.JTextField;
 import org.typetopaste.key.KeyUtil;
 import org.typetopaste.util.ArrayUtil;
 
+/**
+ * Text component that allows editing of keyboard shortcuts.    
+ * @author alex
+ */
 @SuppressWarnings("serial")
 public class ShortcutEditor extends JTextField implements KeyListener {
 	private static final int MAX_SHORTCUT_LENGTH = 4; // 3 control keys and one other key, e.g. Ctrl+Alt+Shift-X
@@ -28,6 +32,7 @@ public class ShortcutEditor extends JTextField implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent e) {
+		// empty implementation. We process keyPressed and keyReleased events separately. 
 	}
 
 	@Override

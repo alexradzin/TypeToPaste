@@ -17,6 +17,16 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 
+/**
+ * {@code ClickPad} is a small head-less window dynamically positioned under the mouse pointer and 
+ * receives mouse click that triggers typing emulation instead of pasting using clipboard.
+ * 
+ * {@code ClickPad} is positioned automatically while mouse is being moved but can be also moved using 
+ * using arrow keys. Typing is triggered either by click or by regular {@code Ctrl+V} or {@code Shift+Insert} keyboard shortcuts.
+ * {@code ClickPad} contains 2 radio buttons that allow switching among 2 prefixes for Unicode typing: {@code Alt} and {@code Ctrl+Shft+U}.   
+ *         
+ * @author alex
+ */
 @SuppressWarnings("serial")
 public class ClickPad extends JFrame {
 	private int width;

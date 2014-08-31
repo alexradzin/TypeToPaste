@@ -10,7 +10,23 @@ import java.util.Map;
 import static org.typetopaste.key.CharKeyMappingUtil.initRange;
 import static org.typetopaste.key.CharKeyMappingUtil.typeCommand;
 
-
+/**
+ * Implementation of {@link KeyCommandFactory} that creates sequence of key commands for given character that is typed using its code.<br/> 
+ * 
+ * This factory is typically useful when typing characters that absent on keyboard. For example Alt+1090 for Windows. <br/>
+ * 
+ * Typically when typing characters using code user has to type some prefix and then the code of required character. 
+ * There are 2 ways to enter the prefix: 
+ * <ul>
+ * 	<li>Press the prefix key(s) and then type code while holding them</li>
+ * 	<li>Type the prefix key(s) and then type code immediately after them</li>
+ * </ul>
+ * <br/>
+ * Mixed strategy is possible too: user presses some keys, then, while holding these keys types other key(s), then types the code of required character. 
+ * This class is flexible enough to support all these strategies.   
+ *     
+ * @author alex
+ */
 public class CodeFactory implements KeyCommandFactory {
 	private final KeyCommand[] before;
 	private final KeyCommand[] after;

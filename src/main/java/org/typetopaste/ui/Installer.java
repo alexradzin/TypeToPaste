@@ -14,6 +14,13 @@ import org.typetopaste.install.ShortcutCreator;
 import org.typetopaste.install.WindowsShortcutCreator;
 import org.typetopaste.util.IOUtil;
 
+/**
+ * {@code Installer} implements logic of installation of {@code TypeToPaste}. 
+ * 
+ * In fact it downloads that jar file and creates custom shortcut that can be used to launch {@code TypeToPaste} 
+ * if current platform is supported.  
+ * @author alex
+ */
 public class Installer {
 	private ShortcutCreator shortcutCreator;
 	

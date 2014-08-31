@@ -6,6 +6,13 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Simple implementation of a trivial template engine.
+ * 
+ * Replaces variable references by their values. Variable references are defined as <code>${VARIABLE_NAME}<code>. 
+ * 
+ * @author alex
+ */
 public class TemplateEngine {
 	private static final Pattern variablePattern = Pattern.compile("\\$\\{(.*?)\\}");
 
