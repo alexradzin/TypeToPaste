@@ -30,9 +30,16 @@ public class TypistFactory {
 	
 	private static final Comparator<int[]> intArrayComparator = new ArrayComparator<int[]>(intComparator);
 	private static final Comparator<int[][]> int2dArrayComparator = new ArrayComparator<int[][]>(intArrayComparator);
+	private static final Callable<Long> zero = new Callable<Long>() {
+		@Override
+		public Long call() throws Exception {
+			return 0L;
+		}
+	};
+	
 	
 
-	public Typist<String> createTypist(Robot robot, int[][][] allKeyCodeKeys, Callable<int[][]> switchGetter) {
+	public Typist<String> createTypist(Robot robot, int[][][] allKeyCodeKeys, Callable<int[][]> switchGetter, Callable<Long> delaySetter) {
 		Map<int[][], KeyCommandFactory> commandFactories = new TreeMap<int[][], KeyCommandFactory>(int2dArrayComparator);
 		
 		for (int[][] codeKeys : allKeyCodeKeys) {
@@ -48,8 +55,9 @@ public class TypistFactory {
 		
 		// emulates individual key event
 		Typist<KeyCommand> robotTypist = new RobotTypist(robot);
+		Typist<KeyCommand> delayedTypist = new DelayedTypist<KeyCommand>(robotTypist, zero, delaySetter);
 		// emulates sequence of key events
-		Typist<Iterable<KeyCommand>> keyCommandsTypist = new SequenceTypist<KeyCommand>(robotTypist);
+		Typist<Iterable<KeyCommand>> keyCommandsTypist = new SequenceTypist<KeyCommand>(delayedTypist);
 		
 		// types individual character
 		Typist<Character> charTypist = new CharTypist(keyCommandsTypist, keyCommandFactory);

@@ -41,7 +41,7 @@ public class EnglishKeyboard implements KeyCommandFactory {
 		init(';', KeyEvent.VK_SEMICOLON, baseKeys);
 		init('\'', KeyEvent.VK_AMPERSAND, baseKeys);
 		init('[', KeyEvent.VK_OPEN_BRACKET, baseKeys);
-		init('[', KeyEvent.VK_CLOSE_BRACKET, baseKeys);
+		init(']', KeyEvent.VK_CLOSE_BRACKET, baseKeys);
 		init('`', KeyEvent.VK_BACK_QUOTE, baseKeys);
 		init('=', KeyEvent.VK_EQUALS, baseKeys);
 		

@@ -40,6 +40,7 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 	
 	private Collection<Integer> copyKeyCommandSequence = new ArrayList<>(); 
 	
+	
 	public ClickPadEventManager(ClickPad pad, Robot robot) {
 		super();
 		this.pad = pad;
@@ -51,10 +52,16 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 				return ClickPadEventManager.this.pad.getCodeKeys();
 			}
 		}; 
+	
+		Callable<Long> delayGetter = new Callable<Long>() {
+			@Override
+			public Long call() throws Exception {
+				return (long)ClickPadEventManager.this.pad.getDelay();
+			}
 			
+		};
 			
-			
-		this.typist = new TypistFactory().createTypist(robot, pad.getAllCodeKeys(), switchGetter);
+		this.typist = new TypistFactory().createTypist(robot, pad.getAllCodeKeys(), switchGetter, delayGetter);
 		new PositionFixer().start();
 	}
 
@@ -186,6 +193,17 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 			return true;
 		}
 
+		
+		if(KeyEvent.VK_UP == code  && (e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK) {
+			configureDelay(+1);
+			return true;
+		}
+		if(KeyEvent.VK_DOWN == code  && (e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK) {
+			configureDelay(-1);
+			return true;
+		}
+		
+		
 		return false;
 	}
 	
@@ -215,6 +233,10 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 				copyKeyCommandSequence.add(key);
 			}
 		}
+	}
+	
+	private void configureDelay(int increment) {
+		pad.configureDelay(increment);
 	}
 
 	private void paste() {
@@ -258,7 +280,7 @@ public class ClickPadEventManager implements MouseListener, MouseMotionListener,
 	/**
 	 * When mouse is moving fast it can "escape" the {@code ClickPad}. 
 	 * To avoid this we "fix" the position of {@code ClickPad} when mouse is out asynchronously.     
-	 * @author alex
+	 * author alex
 	 */
 	private class PositionFixer extends Thread {
 		@Override

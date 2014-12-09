@@ -2,6 +2,7 @@ package org.typetopaste.ui;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
@@ -11,10 +12,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 
 /**
@@ -33,6 +37,7 @@ public class ClickPad extends JFrame {
 	private int height;
 	private JRadioButton alt;
 	private JRadioButton ctlrShiftU;
+	private JSpinner delay;
 	
 	
 	private static final int[][][] allCodeKeys = new int[][][] {
@@ -45,7 +50,7 @@ public class ClickPad extends JFrame {
 	
 	
 	public ClickPad(int closeOperation) {
-		this(150, 120, closeOperation);
+		this(180, 120, closeOperation);
 	}
 	
 	
@@ -87,7 +92,15 @@ public class ClickPad extends JFrame {
 		}
 		
 		//TODO disable unicode input for unsupported platform 
+		delay = new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
+		delay.setEnabled(false);
 		
+		JComponent field = ((JSpinner.DefaultEditor) delay.getEditor());
+		Dimension prefSize = field.getPreferredSize();
+		int width = field.getFontMetrics(field.getFont()).stringWidth("1000");
+		field.setPreferredSize(new Dimension(width, prefSize.height));
+
+		panel.add(delay);
 		panel.add(alt);
 		panel.add(ctlrShiftU);
 		
@@ -128,6 +141,19 @@ public class ClickPad extends JFrame {
 		return null;
 	}
 
+	
+	int configureDelay(int increment) {
+		int newValue = ((Integer)delay.getValue()).intValue() + increment;
+		delay.setValue(newValue);
+		return newValue;
+	}
+	
+	int getDelay() {
+		return ((Integer)delay.getValue()).intValue();
+	}
+	
+	
+	
 	public void close() {
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 	}
