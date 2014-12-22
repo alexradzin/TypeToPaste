@@ -5,14 +5,16 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.typetopaste.install.ShortcutCreator;
 import org.typetopaste.install.WindowsShortcutCreator;
-import org.typetopaste.util.IOUtil;
+
+import com.github.rjeschke.txtmark.Processor;
 
 /**
  * {@code Installer} implements logic of installation of {@code TypeToPaste}. 
@@ -23,6 +25,7 @@ import org.typetopaste.util.IOUtil;
  */
 public class Installer {
 	private ShortcutCreator shortcutCreator;
+	private ResourceDiscoverer resourceDiscoverer = new ResourceDiscoverer();
 	
 	public void install() throws IOException {
 		shortcutCreator = shortcutCreator();
@@ -50,11 +53,7 @@ public class Installer {
 				    null,  
 	                cmd);
 		} catch (IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-				    message,
-				    title,
-				    JOptionPane.ERROR_MESSAGE);
+			UIUtil.showErrorMessage(message, title);
 		}
 	}
 
@@ -68,49 +67,35 @@ public class Installer {
 
 	public void createShortcut(int[] shortcut) {
 		try {
-			String jar = getJarPath();
-			String[] args = {"-jar", jar};
+			File cp = resourceDiscoverer.getJarFile();
+			String path = cp.getAbsolutePath();
+			String[] args = cp.isDirectory() ? new String[] {"-cp", path, ClickPad.class.getName()} : new String[] {"-jar", path};
 			shortcutCreator.createShortcut(getJvmPath(), args, shortcut);
-			System.exit(0);
 		} catch (IOException e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(null,
-				    "Automatic shortcut creation failed",
-				    "Error",
-				    JOptionPane.ERROR_MESSAGE);
+			UIUtil.showErrorMessage("Automatic shortcut creation failed");
+		}
+	}
+	
+	public void extractHelp() {
+		try (
+				InputStream md = getClass().getResourceAsStream("/help.md"); 
+				InputStream img = getClass().getResourceAsStream("/clickpadhelp.png"); 
+				OutputStream faos = new FileOutputStream(resourceDiscoverer.getHelpFile())) {
+			faos.write(Processor.process(md).getBytes());
+		} catch (IOException e) {
+			UIUtil.showErrorMessage("Cannot extract help file");
 		}
 	}
 
+	
 	private String getJvmPath() throws IOException {
 		return String.format("%s/bin/java", System.getProperty("java.home"));
 	}
 	
-	
 	private String getJarPath() throws IOException {
-		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();
-		File locationFile = new File(location.getPath());
-		String protocol = location.getProtocol();
-		
-		if (protocol.toLowerCase().startsWith("http")) {
-			// If we are running using JNLP the jar file is too small to trigger java web start to cache it. 
-			// So we download the file again and store it in current directory in order to configure shortcut. 
-			//TODO: although it is fine for Windows using current directory on other platforms may cause problems. Test it!
-			// If current directory is not writable we try to use temporary directory as a work around. 
-			File cacheDir = new File(".").getCanonicalFile();
-			if (!cacheDir.canWrite()) {
-				cacheDir = new File(System.getProperty("java.io.tmpdir")); 
-			}
-			File cachedJar = new File(cacheDir, locationFile.getName());
-			FileOutputStream faos = new FileOutputStream(cachedJar);
-			
-			IOUtil.copy(location.openStream(), faos);
-			faos.flush();
-			faos.close();
-			locationFile = cachedJar; 
-		}
-		
-		return locationFile.getAbsolutePath();
+		return resourceDiscoverer.getJarFile().getAbsolutePath();
 	}
+
 	
 	private ShortcutCreator shortcutCreator() {
 		String osName = System.getProperty("os.name");
