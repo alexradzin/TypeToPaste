@@ -107,22 +107,7 @@ public class ClickPad extends JFrame {
 		
 		//TODO disable unicode input for unsupported platform
 		
-		
-		Image image;
-		try {
-			image = ImageIO.read(getClass().getResourceAsStream("/delay.png"));
-		} catch (IOException e) {
-			image = null;
-		}
-		final Image backgroundImage = image;
-		
-		delay = new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1)) {
-			public void paintComponent(Graphics g) {
-				g.drawImage(backgroundImage, 0, 0, this);
-				super.paintComponent(g);
-			}
-		};
-	
+		delay = new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
 		delay.setEnabled(false);
 		help = new JButton("?");
 		Font font = help.getFont();
