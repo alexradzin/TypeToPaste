@@ -6,8 +6,6 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -17,11 +15,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.font.TextAttribute;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Collections;
 import java.util.Map;
+import java.util.prefs.Preferences;
 
-import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -32,6 +32,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+
+import org.typetopaste.typist.Typist;
 
 /**
  * {@code ClickPad} is a small head-less window dynamically positioned under the mouse pointer and 
@@ -53,6 +55,30 @@ public class ClickPad extends JFrame {
 	private JSpinner delay;
 	private JButton help;
 	
+	private Preferences preferences = Preferences.userNodeForPackage(Typist.class);
+	private static final String TYPING_DELAY = "typingDelay";
+	private final int typingDelay;
+	
+	private static final String UNICODE_TYPING_PREFIX = "unicodeTypingPrefix";
+	private static enum UnicodeTypingPrefix {
+		alt,
+		ctlrShiftU,
+		;
+		
+		static UnicodeTypingPrefix discoverPlatformDefault() {
+			String osName = System.getProperty("os.name");
+			if (osName.toLowerCase().contains("windows")) {
+				return alt; 
+			} else if (osName.toLowerCase().contains("linux")) {
+				 return ctlrShiftU;
+			}
+			return alt; // just to avoid nulls 
+		}
+	}
+	
+	private final UnicodeTypingPrefix unicodeTypingPrefix;
+	private static final int MAX_TYPING_DELAY = 1000;
+	
 	
 	private static final int[][][] allCodeKeys = new int[][][] {
 			new int[][] {{KeyEvent.VK_ALT}},
@@ -71,6 +97,9 @@ public class ClickPad extends JFrame {
 	public ClickPad(int width, int height, int closeOperation) {
 		this.width = width;
 		this.height = height;
+
+        typingDelay = preferences.getInt(TYPING_DELAY, 1);
+        unicodeTypingPrefix = UnicodeTypingPrefix.valueOf(preferences.get(UNICODE_TYPING_PREFIX, UnicodeTypingPrefix.discoverPlatformDefault().name()));
 		
 		setLayout(new BorderLayout(0, 0));
 		setAlwaysOnTop(true);
@@ -86,6 +115,7 @@ public class ClickPad extends JFrame {
         // Set the window to 55% opaque (45% translucent).
         final float defaultOpacity = 0.55f;
         setOpacity(defaultOpacity);
+        
 	}
 	
 	private JPanel toolbar() {
@@ -98,36 +128,62 @@ public class ClickPad extends JFrame {
 		group.add(alt);
 		group.add(ctlrShiftU);
 		
-		String osName = System.getProperty("os.name");
-		if (osName.toLowerCase().contains("windows")) {
-			alt.setSelected(true); 
-		} else if (osName.toLowerCase().contains("linux")) {
-			 ctlrShiftU.setSelected(true);
+		
+		switch(unicodeTypingPrefix) {
+			case alt: 
+				alt.setSelected(true);
+				break;
+			case ctlrShiftU: 
+				ctlrShiftU.setSelected(true);
+				break;
+			default:
+				throw new IllegalArgumentException(String.valueOf(unicodeTypingPrefix));
 		}
 		
 		//TODO disable unicode input for unsupported platform
 		
-		delay = new JSpinner(new SpinnerNumberModel(1, 0, 1000, 1));
+		delay = new JSpinner(new SpinnerNumberModel(typingDelay, 0, MAX_TYPING_DELAY, 1));
 		delay.setEnabled(false);
 		help = new JButton("?");
 		Font font = help.getFont();
 		Map<TextAttribute, Integer> fontAttributes = Collections.singletonMap(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 		help.setFont(font.deriveFont(fontAttributes));
 		help.setMnemonic(KeyEvent.VK_SLASH);
-		help.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Desktop.getDesktop().browse(resourceDiscoverer.getHelpFile().toURI());
-				} catch (IOException e1) {
-					UIUtil.showErrorMessage("Cannot show help");
+		
+		
+		
+		File helpFile;
+		try {
+			helpFile = resourceDiscoverer.getHelpFile();
+		} catch (IOException e1) {
+			helpFile = null;
+		}
+		
+		if (helpFile != null && !helpFile.exists()) {
+			resourceDiscoverer.extractHelp();
+		}
+			
+		
+		if (helpFile != null && helpFile.exists()) {
+			help.setEnabled(true);
+			final URI helpFileUri = helpFile.toURI();
+			help.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					try {
+						Desktop.getDesktop().browse(helpFileUri);
+					} catch (IOException e1) {
+						UIUtil.showErrorMessage("Help file is unavailable");
+					}
 				}
-			}
-		});
+			});
+		} else {
+			help.setEnabled(false);
+		}
 		
 		JComponent field = ((JSpinner.DefaultEditor) delay.getEditor());
 		Dimension prefSize = field.getPreferredSize();
-		int width = field.getFontMetrics(field.getFont()).stringWidth("1000");
+		int width = field.getFontMetrics(field.getFont()).stringWidth("" + MAX_TYPING_DELAY);
 		field.setPreferredSize(new Dimension(width, prefSize.height));
 		
 		panel.add(delay);
@@ -186,6 +242,9 @@ public class ClickPad extends JFrame {
 	
 	
 	public void close() {
+		preferences.putInt(TYPING_DELAY, (Integer)delay.getValue());
+		UnicodeTypingPrefix p = alt.isSelected() ? UnicodeTypingPrefix.alt : UnicodeTypingPrefix.ctlrShiftU;
+		preferences.put(UNICODE_TYPING_PREFIX, p.name());
 		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 	}
 	

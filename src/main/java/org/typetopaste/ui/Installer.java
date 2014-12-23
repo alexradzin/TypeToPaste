@@ -3,18 +3,13 @@ package org.typetopaste.ui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import org.typetopaste.install.ShortcutCreator;
 import org.typetopaste.install.WindowsShortcutCreator;
-
-import com.github.rjeschke.txtmark.Processor;
 
 /**
  * {@code Installer} implements logic of installation of {@code TypeToPaste}. 
@@ -76,17 +71,10 @@ public class Installer {
 		}
 	}
 	
-	public void extractHelp() {
-		try (
-				InputStream md = getClass().getResourceAsStream("/help.md"); 
-				InputStream img = getClass().getResourceAsStream("/clickpadhelp.png"); 
-				OutputStream faos = new FileOutputStream(resourceDiscoverer.getHelpFile())) {
-			faos.write(Processor.process(md).getBytes());
-		} catch (IOException e) {
-			UIUtil.showErrorMessage("Cannot extract help file");
-		}
+	ResourceDiscoverer getResourceDiscoverer() {
+		return resourceDiscoverer;
 	}
-
+	
 	
 	private String getJvmPath() throws IOException {
 		return String.format("%s/bin/java", System.getProperty("java.home"));

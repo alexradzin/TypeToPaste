@@ -1,13 +1,24 @@
 package org.typetopaste.ui;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.URL;
 
 import org.typetopaste.util.IOUtil;
 
+import com.github.rjeschke.txtmark.Processor;
+
 public class ResourceDiscoverer {
+	private static final String UTF8 = "UTF8";
+	private static final String HTML_START = "<html><head><meta charset=\"UTF-8\"></head>";
+	private static final String HTML_END = "</html>";
 	private File jarFile;
 	
 	
@@ -24,6 +35,23 @@ public class ResourceDiscoverer {
 		File base = cp.isDirectory() ? cp : cp.getParentFile();
 		return new File(base, "help.html");
 	}
+	
+	
+	public void extractHelp() {
+		try (
+				InputStream md = getClass().getResourceAsStream("/help.md"); 
+				InputStream img = getClass().getResourceAsStream("/clickpadhelp.png");
+				Writer w = new OutputStreamWriter(new FileOutputStream(getHelpFile()), UTF8);
+				OutputStream faos = new FileOutputStream(getHelpFile())) {
+			
+			w.write(HTML_START);
+			w.write(Processor.process(md, UTF8));
+			w.write(HTML_END);
+		} catch (IOException e) {
+			UIUtil.showErrorMessage("Cannot extract help file");
+		}
+	}
+	
 	
 	private File discoverJarFile() throws IOException {
 		URL location = getClass().getProtectionDomain().getCodeSource().getLocation();

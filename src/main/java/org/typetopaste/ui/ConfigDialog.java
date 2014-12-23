@@ -103,7 +103,7 @@ public class ConfigDialog extends JFrame implements KeyEventDispatcher {
 
 	private void create() {
 		installer.createShortcut(shortcutEditor.getShortcut());
-		installer.extractHelp();
+		installer.getResourceDiscoverer().extractHelp();
 		setVisible(false);
 		System.exit(0);
 	}
