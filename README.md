@@ -80,6 +80,6 @@ When you have to copy and paste text to application that does not support paste 
 5. Use Alt-A or Alt-U to set method of typing Unicode characters.  
 
 
-![help text](../src/main/resources/clickpadhelp.jpg "Usage")
+![help text](../../blob/master/src/main/resources/clickpadhelp.png "Usage")
  
 For more information refer to the [TypeToPaste home page](https://sites.google.com/site/typetopaste/).
